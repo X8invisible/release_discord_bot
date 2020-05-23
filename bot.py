@@ -22,10 +22,13 @@ class MyCog(commands.Cog):
     def cog_unload(self):
         self.printer.cancel()
 
-    @tasks.loop(seconds=5.0)
+    @tasks.loop(minutes=10.0)
     async def printer(self):
-        msg = self.pm.getPosts()
-        await self.bot.do_message(msg)
+        if len(self.bot.chs) != 0:
+            msg = self.pm.getPosts()
+            await self.bot.do_message(msg)
+        else:
+            await asyncio.sleep(random.uniform(1, 3))
 
     @printer.before_loop
     async def before_printer(self):
@@ -33,9 +36,10 @@ class MyCog(commands.Cog):
         await self.bot.wait_until_ready()
 
 class CustomClient(discord.Client):
-
+    chs = []
     @client.event
     async def on_ready(self):
+        self.chs.append(self.get_channel(CH))
         print(f'{self.user.name} has connected to Discord!')
 
     @client.event
@@ -48,8 +52,8 @@ class CustomClient(discord.Client):
     @client.event
     async def do_message(self, msg):
         if msg is not "nothing":
-            channel = self.get_channel(CH)
-            await channel.send(msg)
+            for c in self.chs:
+                await c.send(msg)
         else:
             print("nada")
             
@@ -70,6 +74,15 @@ class CustomClient(discord.Client):
         if message.content == '^99':
             response = random.choice(brooklyn_99_quotes)
             await message.channel.send(response)
+        if message.content == '^releases':
+            response = "no work"
+            if message.channel not in self.chs:
+                self.chs.append(message.channel)
+                response = "Channel will be notified of new releases."
+            else:
+                response = "Channel already in list."
+            await message.channel.send(response)
+
     
 client = CustomClient()
 cog = MyCog(client)

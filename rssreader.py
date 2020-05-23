@@ -7,7 +7,7 @@ import re
 class Postman():
     def __init__(self):
         self.ns = feedparser.parse("http://www.horriblesubs.info/rss.php?res=1080")
-        self.newestDate = dt(2020, 5, 17, 0, 0, 0 , 7, datetime.timezone.utc)
+        self.newestDate = dt(2020, 5, 23, 0, 0, 0 , 7, datetime.timezone.utc)
 
     def refresh(self):
         self.ns = feedparser.parse("http://www.horriblesubs.info/rss.php?res=1080")
