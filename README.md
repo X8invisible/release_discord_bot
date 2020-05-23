@@ -1,2 +1,2 @@
 # release_discord_bot
- Anime release discord bot
+ A bot that lets you know about releases
